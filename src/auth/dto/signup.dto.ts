@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  IsArray,
   IsEmail,
   IsEnum,
   IsOptional,
@@ -15,12 +16,12 @@ export class SignUpCredentialsDto {
   })
   @IsString()
   @MinLength(4)
-  @MaxLength(10)
+  @MaxLength(15)
   readonly username: string;
 
   @ApiProperty()
   @IsString()
-  // @MinLength(4)
+  @MinLength(8)
   // @MaxLength(10)
   // @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
   //   message: 'password is too week!',
@@ -37,10 +38,11 @@ export class SignUpCredentialsDto {
   @IsEnum(UserRole)
   readonly role: string;
 
-  @ApiProperty()
+  @IsArray()
+  wishlist: string[];
+
   @IsString()
-  @MinLength(15)
-  tmdb_key: string;
+  color: string;
 }
 
 /**

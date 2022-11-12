@@ -33,7 +33,7 @@ export class AuthService {
     signupCredentialsDto: SignUpCredentialsDto,
   ): Promise<{ accessToken: string; role: UserRole }> {
     try {
-      const { username, password, email, tmdb_key, role } =
+      const { username, password, email, role, wishlist, color } =
         signupCredentialsDto;
 
       // hash the password;
@@ -45,7 +45,8 @@ export class AuthService {
         username,
         password: hashedPassword,
         email,
-        tmdb_key,
+        wishlist,
+        color,
         role: UserRole[role] || UserRole.USER,
       });
 
@@ -77,15 +78,14 @@ export class AuthService {
 
     if (user && (await bcrypt.compare(password, user.password))) {
       const accessToken: string = this.createToken(user);
+
       return { accessToken, role: user.role };
-    } else {
-      throw new UnauthorizedException('Please check your login credentials');
     }
   }
 
   /* Refresh Token @Post */
   async refreshToken(refreshTokenDto: RefreshTokenDto) {
-    const { email, id } = refreshTokenDto;
+    const { email } = refreshTokenDto;
     const user = await this.userRepository.findOne({ email });
 
     if (user) {
@@ -105,12 +105,18 @@ export class AuthService {
   /* Update User Info @Patch */
   async updateUser(updateCredentialDto: UpdateCredentialDto, user: User) {
     const { role } = updateCredentialDto;
+    const { wish } = updateCredentialDto;
 
     const update = await this.userRepository.update(
       { email: user.email },
       {
         ...updateCredentialDto,
-        role: UserRole[role],
+        wishlist: wish
+          ? !user.wishlist.includes(wish)
+            ? [...user.wishlist, wish]
+            : user.wishlist.filter((item) => item !== wish)
+          : user.wishlist,
+        role: role ? UserRole[role] : user.role,
       },
     );
 
@@ -123,10 +129,11 @@ export class AuthService {
 
   /* Delete User @Post */
   async deleteAnyUser(deleteUserDto: DeleteUserDto, user: User) {
-    if (user.role !== UserRole.ADMIN)
-      new UnauthorizedException(
+    if (user.role !== UserRole.ADMIN) {
+      return new UnauthorizedException(
         `You don't have the permission to delete a user.`,
       );
+    }
     const { email } = deleteUserDto;
     const userfromdb = await this.userRepository.findOne({ where: { email } });
     if (!userfromdb) {
@@ -166,7 +173,8 @@ export class AuthService {
       id: user.id.toString(),
       username: user.username,
       email: user.email,
-      tmdb_key: user.tmdb_key,
+      color: user.color,
+      wishlist: user.wishlist,
     };
 
     const accessToken: string = this.jwtService.sign(payload);

@@ -33,7 +33,7 @@ export class AuthCService {
     signupCredentialsDto: SignUpCredentialsDto,
     res: Response,
   ): Promise<User> {
-    const { username, password, email, tmdb_key, role } = signupCredentialsDto;
+    const { username, password, email, role } = signupCredentialsDto;
 
     // hash the password;
     const salt = await bcrypt.genSalt();
@@ -44,7 +44,6 @@ export class AuthCService {
       username,
       password: hashedPassword,
       email,
-      tmdb_key,
       role: role ? UserRole[role] : UserRole.USER,
     });
 
@@ -59,7 +58,6 @@ export class AuthCService {
         id: userfromdb.id,
         username: userfromdb.username,
         email: userfromdb.email,
-        tmdb_key: userfromdb.tmdb_key,
         role: userfromdb.role,
       } as User;
     } catch (error) {
@@ -85,7 +83,6 @@ export class AuthCService {
         id: user.id,
         username: user.username,
         email: user.email,
-        tmdb_key: user.tmdb_key,
         role: user.role,
       } as User;
     } else {
@@ -129,7 +126,6 @@ export class AuthCService {
       id: userfromdb.id,
       username: userfromdb.username,
       email: userfromdb.email,
-      tmdb_key: userfromdb.tmdb_key,
       role: userfromdb.role,
     } as User;
   }
@@ -154,7 +150,8 @@ export class AuthCService {
       id: user.id.toString(),
       username: user.username,
       email: user.email,
-      tmdb_key: user.tmdb_key,
+      wishlist: user.wishlist,
+      color: user.color,
     };
     const secretData = {
       accessToken: this.jwtService.sign(payload),

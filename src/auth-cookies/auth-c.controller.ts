@@ -49,7 +49,7 @@ export class AuthCController {
   }
 
   @Patch('/userupdate')
-  @UseGuards(AuthGuard('jwt-c'))
+  @UseGuards(AuthGuard('jwt'))
   updateUser(
     @GetUser() user: User,
     @Body() updateCredentialDto: UpdateCredentialDto,

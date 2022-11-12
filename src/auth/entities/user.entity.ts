@@ -24,5 +24,8 @@ export class User {
   role: UserRole;
 
   @Column()
-  tmdb_key: string;
+  wishlist: string[];
+
+  @Column()
+  color: string;
 }

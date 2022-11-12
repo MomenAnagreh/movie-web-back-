@@ -59,7 +59,6 @@ export class AuthController {
     @GetUser() user: User,
     @Body() updateCredentialDto: UpdateCredentialDto,
   ) {
-    console.log(user.id.toString());
     return this.authService.updateUser(updateCredentialDto, user);
   }
 

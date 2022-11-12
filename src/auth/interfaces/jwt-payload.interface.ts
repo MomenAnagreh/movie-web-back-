@@ -2,5 +2,6 @@ export interface JwtPayload {
   id: string;
   username: string;
   email: string;
-  tmdb_key: string;
+  wishlist: string[];
+  color: string;
 }
