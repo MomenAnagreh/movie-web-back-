@@ -127,6 +127,23 @@ export class AuthService {
     return { accessToken, role: updatedUser.role };
   }
 
+  async deleteUserWishlist(user: User) {
+    const update = await this.userRepository.update(
+      { email: user.email },
+      {
+        ...UpdateCredentialDto,
+        wishlist: [],
+        role: user.role,
+      },
+    );
+
+    const updatedUser = await this.userRepository.findOne({
+      where: { email: user.email },
+    });
+    const accessToken: string = this.createToken(updatedUser);
+    return { accessToken, role: updatedUser.role };
+  }
+
   /* Delete User @Post */
   async deleteAnyUser(deleteUserDto: DeleteUserDto, user: User) {
     if (user.role !== UserRole.ADMIN) {

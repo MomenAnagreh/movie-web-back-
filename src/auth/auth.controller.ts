@@ -62,6 +62,12 @@ export class AuthController {
     return this.authService.updateUser(updateCredentialDto, user);
   }
 
+  @Patch('/deleteuserwishlist')
+  @UseGuards(AuthGuard('jwt'))
+  deleteuserwishlist(@GetUser() user: User) {
+    return this.authService.deleteUserWishlist(user);
+  }
+
   @Post('/deleteuser')
   @UseGuards(AuthGuard('jwt'))
   deleteAnyUser(@GetUser() user: User, @Body() deleteUserDto: DeleteUserDto) {
